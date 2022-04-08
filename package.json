@@ -1,0 +1,27 @@
+{
+  "name": "@pearone/blockchain",
+  "version": "1.0.0",
+  "description": "blockchain",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "directories": {
+    "test": "__tests__"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^17.0.23",
+    "crypto": "^1.0.1",
+    "typescript": "^4.6.3"
+  }
+}

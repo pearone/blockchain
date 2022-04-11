@@ -15,7 +15,8 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "tsc -w"
+    "dev": "tsc -w",
+    "dig": "node ./dist"
   },
   "author": "",
   "license": "ISC",

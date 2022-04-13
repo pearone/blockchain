@@ -30,17 +30,17 @@ export class Blockchain {
     blockchain: BlockType[];
     difficuty: number;
 
+    static first_block = {
+        index: 0,
+        hash: '005089fc240e933d891891dc13029370f7214f6c4aa1d6d0719eea6e25d11c07',
+        prevhash: '0',
+        timestamp: 1649482442321,
+        data: 'hello, pear-chain',
+        nonce: '84'
+    };
+
     constructor() {
-        this.blockchain = [
-            {
-                index: 0,
-                hash: '005089fc240e933d891891dc13029370f7214f6c4aa1d6d0719eea6e25d11c07',
-                prevhash: '0',
-                timestamp: 1649482442321,
-                data: 'hello, pear-chain',
-                nonce: '84'
-            }
-        ];
+        this.blockchain = [Blockchain.first_block];
         this.difficuty = 2;
     }
 
@@ -55,7 +55,10 @@ export class Blockchain {
         };
 
         const new_block = this.genCreateBlock(data);
-        if (this.isValidBlock(new_block)) {
+        if (
+            this.isValidBlock(new_block, this.getLastBlock()) &&
+            this.isValidChain()
+        ) {
             this.blockchain.push(new_block);
         } else {
             console.error('Error, Invalid block', new_block);
@@ -128,25 +131,24 @@ export class Blockchain {
      * 3.最新区块的prevHash等于最新区块的hash
      * 4.区块的hash值满足难度要求
      */
-    isValidBlock(new_block: BlockType) {
-        const last_block = this.getLastBlock();
+    isValidBlock(new_block: BlockType, last_block: BlockType): boolean {
         if (new_block.index !== last_block.index + 1) {
-            console.log('errorCode', 1);
+            console.error('errorCode', 1);
             return false;
         }
         if (new_block.timestamp <= last_block.timestamp) {
-            console.log('errorCode', 2);
+            console.error('errorCode', 2);
             return false;
         }
         if (new_block.prevhash !== last_block.hash) {
-            console.log('errorCode', 3);
+            console.error('errorCode', 3);
             return false;
         }
         if (
             new_block.hash.slice(0, this.difficuty) !==
             '0'.repeat(this.difficuty)
         ) {
-            console.log('errorCode', 4);
+            console.error('errorCode', 4);
             return false;
         }
         return true;
@@ -155,5 +157,14 @@ export class Blockchain {
     /**
      * 全链条校验
      */
-    isValidChain() {}
+    isValidChain(blockchain: BlockType[] = this.blockchain): boolean {
+        let i = blockchain.length - 1;
+        while (i > 1) {
+            if (!this.isValidBlock(blockchain[i], blockchain[i - 1])) {
+                return false;
+            }
+            i--;
+        }
+        return true;
+    }
 }
